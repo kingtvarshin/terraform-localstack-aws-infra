@@ -84,10 +84,8 @@ Expected output:
 2025-07-10 04:23:37 my-local-bucket
 ```
 
+---
 
-terraform init -upgrade
-terraform plan -var-file="tfvars/terraform.tfvars"
-terraform apply -var-file="tfvars/terraform.tfvars" -auto-approve
-terraform apply -target='null_resource.zip_lambdas' -var-file="tfvars/terraform.tfvars" -auto-approve
+## Detailed Lambda Deployment Guide
 
-docker run --rm -it -p 4566:4566 -p 4571:4571 -v //var/run/docker.sock:/var/run/docker.sock localstack/localstack
+To understand how this repo helps in setting up and deploying AWS Lambda functions dynamically using Terraform modules, refer to the [Lambda Deployment Architecture](https://github.com/kingtvarshin/terraform-localstack-aws-infra/wiki/Lambda-Deployment-Architecture) on the GitHub Wiki.
