@@ -83,3 +83,11 @@ Expected output:
 ```bash
 2025-07-10 04:23:37 my-local-bucket
 ```
+
+
+terraform init -upgrade
+terraform plan -var-file="tfvars/terraform.tfvars"
+terraform apply -var-file="tfvars/terraform.tfvars" -auto-approve
+terraform apply -target='null_resource.zip_lambdas' -var-file="tfvars/terraform.tfvars" -auto-approve
+
+docker run --rm -it -p 4566:4566 -p 4571:4571 -v //var/run/docker.sock:/var/run/docker.sock localstack/localstack
