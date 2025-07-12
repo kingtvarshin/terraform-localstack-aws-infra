@@ -49,7 +49,8 @@ curl http://localhost:4566/_localstack/health
 ```
 Check that key services like s3, lambda, and iam are marked "available" or "running".
 
-### 3. create the desired terraform files and run the init, fmt, validate cmds [ for sample you can got into terraform/terraform-localstack-aws-infra folder and run the beloww cmds]
+### 3. create the desired terraform files and run the init, fmt, validate cmds 
+###### [ for sample you can got into terraform/terraform-localstack-aws-infra folder and run the beloww cmds]
 
 ```bash
 terraform init
