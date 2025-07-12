@@ -53,3 +53,12 @@ build/
 # Windows system files
 .DS_Store
 Thumbs.db
+
+# IAM policy JSONs
+*.auto.tfvars
+*.tfstate
+*.tfstate.*
+iam_policy/*.secret.json
+
+# Lambda package artifacts
+*.zip

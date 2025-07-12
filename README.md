@@ -83,3 +83,9 @@ Expected output:
 ```bash
 2025-07-10 04:23:37 my-local-bucket
 ```
+
+---
+
+## Detailed Lambda Deployment Guide
+
+To understand how this repo helps in setting up and deploying AWS Lambda functions dynamically using Terraform modules, refer to the [Lambda Deployment Architecture](https://github.com/kingtvarshin/terraform-localstack-aws-infra/wiki/Lambda-Deployment-Architecture) on the GitHub Wiki.
