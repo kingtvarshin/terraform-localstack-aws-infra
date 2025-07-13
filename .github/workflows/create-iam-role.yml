@@ -1,0 +1,70 @@
+name: Create IAM Role via LocalStack
+
+on:
+  workflow_dispatch:
+    inputs:
+      aws_access_key:
+        description: 'AWS Access Key'
+        required: true
+        default: 'test'
+      aws_secret_key:
+        description: 'AWS Secret Key'
+        required: true
+        default: 'test'
+      region:
+        description: 'AWS Region'
+        required: true
+        default: 'us-east-1'
+      assume_role_policy:
+        description: 'Path to assume role policy JSON'
+        required: true
+        default: 'iam_role_policy/batch_operation_policy.json'
+      iam_role_name:
+        description: 'Name of the IAM Role'
+        required: true
+        default: 'batch_op_role_github_action'
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ github.event.inputs.aws_access_key }}
+      AWS_SECRET_ACCESS_KEY: ${{ github.event.inputs.aws_secret_key }}
+      AWS_DEFAULT_REGION: ${{ github.event.inputs.region }}
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.6.0
+
+    - name: Create tfvars file from inputs
+      working-directory: terraform/iam_src
+      run: |
+        cat <<EOF > tfvars/github_action.tfvars
+        aws_access_key     = "${{ github.event.inputs.aws_access_key }}"
+        aws_secret_key     = "${{ github.event.inputs.aws_secret_key }}"
+        region             = "${{ github.event.inputs.region }}"
+        assume_role_policy = "${{ github.event.inputs.assume_role_policy }}"
+        iam_role_name      = "${{ github.event.inputs.iam_role_name }}"
+        EOF
+
+    - name: Init Terraform
+      working-directory: terraform/iam_src
+      run: terraform init
+
+    - name: Validate Terraform
+      working-directory: terraform/iam_src
+      run: terraform validate
+
+    - name: Plan
+      working-directory: terraform/iam_src
+      run: terraform plan -var-file=terraform/iam_src/tfvars/github_action.tfvars
+
+    # - name: Apply
+      # working-directory: terraform/iam_src
+    #   run: terraform apply -var-file=terraform/iam_src/tfvars/github_action.tfvars -auto-approve
