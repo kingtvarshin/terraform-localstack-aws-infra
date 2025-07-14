@@ -45,6 +45,7 @@ jobs:
     - name: Create tfvars file from inputs
       working-directory: terraform/iam_src
       run: |
+        mkdir -p tfvars
         cat <<EOF > tfvars/github_action.tfvars
         aws_access_key     = "${{ github.event.inputs.aws_access_key }}"
         aws_secret_key     = "${{ github.event.inputs.aws_secret_key }}"
