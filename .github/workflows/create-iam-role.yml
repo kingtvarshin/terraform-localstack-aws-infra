@@ -34,8 +34,27 @@ jobs:
       AWS_DEFAULT_REGION: ${{ github.event.inputs.region }}
 
     steps:
+
     - name: Checkout repo
       uses: actions/checkout@v3
+
+    - name: Set up Docker (just in case)
+      uses: docker/setup-buildx-action@v3
+
+    - name: Start LocalStack in background
+      run: |
+        docker run -d --name localstack_main \
+          -p 4566:4566 -p 4571:4571 \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -e SERVICES=iam \
+          -e DEBUG=1 \
+          localstack/localstack
+
+    - name: Wait for LocalStack to start
+      run: |
+        echo "Waiting for LocalStack..."
+        sleep 15
+        curl http://localhost:4566/_localstack/health || exit 1
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
