@@ -94,3 +94,8 @@ jobs:
     - name: Apply
       working-directory: terraform/iam_src
       run: terraform apply -var-file=tfvars/github_action.tfvars -auto-approve
+
+    - name: Apply
+      working-directory: terraform/iam_src
+      run: aws --endpoint-url=http://localhost:4566 iam list-roles --region us-east-1
+
