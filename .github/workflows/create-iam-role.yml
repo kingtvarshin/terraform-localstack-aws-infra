@@ -72,6 +72,6 @@ jobs:
       working-directory: terraform/iam_src
       run: terraform plan -var-file=tfvars/github_action.tfvars
 
-    # - name: Apply
-    #   working-directory: terraform/iam_src
-    #   run: terraform apply -var-file=tfvars/github_action.tfvars -auto-approve
+    - name: Apply
+      working-directory: terraform/iam_src
+      run: terraform apply -var-file=tfvars/github_action.tfvars -auto-approve
