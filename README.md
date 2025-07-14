@@ -90,3 +90,7 @@ Expected output:
 ## Detailed Lambda Deployment Guide
 
 To understand how this repo helps in setting up and deploying AWS Lambda functions dynamically using Terraform modules, refer to the [Lambda Deployment Architecture](https://github.com/kingtvarshin/terraform-localstack-aws-infra/wiki/Lambda-Deployment-Architecture) on the GitHub Wiki.
+
+## Detailed IAM role creation Guied
+
+to understand how this repo helps in setting up and deploying AWS IAM roles dynamically using Terraform, refer to the [IAM roles Deployment Architecture](https://github.com/kingtvarshin/terraform-localstack-aws-infra/wiki/IAM-Role-Deployment-via-Terraform-&-LocalStack) on the GitHub Wiki.

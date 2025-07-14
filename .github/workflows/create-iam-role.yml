@@ -34,8 +34,27 @@ jobs:
       AWS_DEFAULT_REGION: ${{ github.event.inputs.region }}
 
     steps:
+
     - name: Checkout repo
       uses: actions/checkout@v3
+
+    - name: Set up Docker (just in case)
+      uses: docker/setup-buildx-action@v3
+
+    - name: Start LocalStack in background
+      run: |
+        docker run -d --name localstack_main \
+          -p 4566:4566 -p 4571:4571 \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -e SERVICES=iam \
+          -e DEBUG=1 \
+          localstack/localstack
+
+    - name: Wait for LocalStack to start
+      run: |
+        echo "Waiting for LocalStack..."
+        sleep 15
+        curl http://localhost:4566/_localstack/health || exit 1
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
@@ -45,6 +64,7 @@ jobs:
     - name: Create tfvars file from inputs
       working-directory: terraform/iam_src
       run: |
+        mkdir -p tfvars
         cat <<EOF > tfvars/github_action.tfvars
         aws_access_key     = "${{ github.event.inputs.aws_access_key }}"
         aws_secret_key     = "${{ github.event.inputs.aws_secret_key }}"
@@ -52,6 +72,12 @@ jobs:
         assume_role_policy = "${{ github.event.inputs.assume_role_policy }}"
         iam_role_name      = "${{ github.event.inputs.iam_role_name }}"
         EOF
+
+    - name: Debug tfvars file
+      working-directory: terraform/iam_src
+      run: |
+        echo "Contents of github_action.tfvars:"
+        cat tfvars/github_action.tfvars
 
     - name: Init Terraform
       working-directory: terraform/iam_src
@@ -63,8 +89,13 @@ jobs:
 
     - name: Plan
       working-directory: terraform/iam_src
-      run: terraform plan -var-file=terraform/iam_src/tfvars/github_action.tfvars
+      run: terraform plan -var-file=tfvars/github_action.tfvars
 
-    # - name: Apply
-      # working-directory: terraform/iam_src
-    #   run: terraform apply -var-file=terraform/iam_src/tfvars/github_action.tfvars -auto-approve
+    - name: Apply
+      working-directory: terraform/iam_src
+      run: terraform apply -var-file=tfvars/github_action.tfvars -auto-approve
+
+    - name: verify IAM role creation
+      working-directory: terraform/iam_src
+      run: aws --endpoint-url=http://localhost:4566 iam list-roles --region us-east-1
+
