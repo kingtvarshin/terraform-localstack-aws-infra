@@ -47,12 +47,18 @@ jobs:
       run: |
         mkdir -p tfvars
         cat <<EOF > tfvars/github_action.tfvars
-        aws_access_key     = "${{ github.event.inputs.aws_access_key }}"
-        aws_secret_key     = "${{ github.event.inputs.aws_secret_key }}"
-        region             = "${{ github.event.inputs.region }}"
-        assume_role_policy = "${{ github.event.inputs.assume_role_policy }}"
-        iam_role_name      = "${{ github.event.inputs.iam_role_name }}"
-        EOF
+aws_access_key     = "${{ github.event.inputs.aws_access_key }}"
+aws_secret_key     = "${{ github.event.inputs.aws_secret_key }}"
+region             = "${{ github.event.inputs.region }}"
+assume_role_policy = "${{ github.event.inputs.assume_role_policy }}"
+iam_role_name      = "${{ github.event.inputs.iam_role_name }}"
+EOF
+
+    - name: Debug tfvars file
+      working-directory: terraform/iam_src
+      run: |
+        echo "Contents of github_action.tfvars:"
+        cat tfvars/github_action.tfvars
 
     - name: Init Terraform
       working-directory: terraform/iam_src
@@ -64,8 +70,8 @@ jobs:
 
     - name: Plan
       working-directory: terraform/iam_src
-      run: terraform plan -var-file=terraform/iam_src/tfvars/github_action.tfvars
+      run: terraform plan -var-file=tfvars/github_action.tfvars
 
     # - name: Apply
-      # working-directory: terraform/iam_src
-    #   run: terraform apply -var-file=terraform/iam_src/tfvars/github_action.tfvars -auto-approve
+    #   working-directory: terraform/iam_src
+    #   run: terraform apply -var-file=tfvars/github_action.tfvars -auto-approve
